@@ -18,6 +18,7 @@ class ViewController: UIViewController {
         self.view.backgroundColor = UIColor.gray
         
         getAPICalls()
+        postJSON()
         
     }
 
@@ -57,6 +58,19 @@ class ViewController: UIViewController {
                     print(category.id)
                     print(category.categoryName)
                 }
+            }
+        }
+    }
+    
+    //MARK: POST method
+
+    private func postJSON() {
+        
+        let newTask = ["task_name": "dental appointment", "category": "home", "due_date": "2017-04-22", "isUrgent": false] as [String : Any]
+        
+        NetworkingManager.postDictionary(newTask as [String : AnyObject], to: "tasks") { (success) in
+            if success {
+                print("post was successful")
             }
         }
     }

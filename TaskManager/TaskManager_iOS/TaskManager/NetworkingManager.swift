@@ -15,19 +15,19 @@ class NetworkingManager: NSObject {
     
     
     //MARK: GET Request (an internal function)
-    private static func getCollection(name: String, completion: @escaping(_ success: Bool, _ object: AnyObject?) -> ()) {
+    private static func getCollection(_ collection: String, completion: @escaping(_ success: Bool, _ object: AnyObject?) -> ()) {
         
-        let endpointURL = baseURL + "\(name)?apiKey=\(apiKey)"
+        let endpointURL = baseURL + "\(collection)?apiKey=\(apiKey)"
         
-        let myURL = URL(string: endpointURL);
+        let myURL = URL(string: endpointURL)
         
-        let request = NSMutableURLRequest(url:myURL!);
+        let request = NSMutableURLRequest(url:myURL!)
         request.httpMethod = "GET"
 
         URLSession.shared.dataTask(with: request as URLRequest) { (data, response, error) in
             
             if (error != nil) {
-                print(error?.localizedDescription ?? "error")
+                print(error?.localizedDescription ?? "get error")
                 completion(false, nil)
             } else {
                 do {
@@ -46,7 +46,7 @@ class NetworkingManager: NSObject {
     
     static func createTasks(with completion: @escaping(_ success: Bool, _ tasks: [Task]?) -> ()) {
         
-        NetworkingManager.getCollection(name: "tasks", completion: { (success, json) in
+        NetworkingManager.getCollection("tasks", completion: { (success, json) in
             
             if success {
                 var taskArray = [Task]()
@@ -80,7 +80,7 @@ class NetworkingManager: NSObject {
     
     static func createCategories(with completion: @escaping(_ success: Bool, _ tasks: [Category]?) -> ()) {
         
-        NetworkingManager.getCollection(name: "categories", completion: { (success, json) in
+        NetworkingManager.getCollection("categories", completion: { (success, json) in
             
             if success {
                 var categoryArray = [Category]()
@@ -108,7 +108,44 @@ class NetworkingManager: NSObject {
         })
     }
     
-    //POST Request
+    //MARK: POST Request
+    static func postDictionary(_ dictionary: [String: AnyObject], to collection: String, with completion: @escaping(_ success: Bool) -> ()) {
+        
+        if let jsonData = try? JSONSerialization.data(withJSONObject: dictionary, options: []) {
+            
+            let endpointURLString = baseURL + "\(collection)?apiKey=\(apiKey)"
+            let myURL = URL(string: endpointURLString)
+            
+            let request = NSMutableURLRequest(url: myURL!)
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "POST"
+            request.httpBody = jsonData
+            
+            URLSession.shared.dataTask(with: request as URLRequest) { (data, response, error) in
+                
+                if error != nil {
+                    print(error?.localizedDescription ?? "post error")
+                    completion(false)
+                } else {
+                    do {
+                        if let data = data {
+                            let jsonData = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? NSDictionary
+                            print("POST DATA INCLUDES MONGO ID")
+                            print(jsonData as Any)
+                            completion(true)
+                        }
+                    } catch let error as NSError {
+                        print(error)
+                        completion(false)
+                    }
+                }
+            }.resume()
+            
+        }
+        
+        //MARK: PUT Request (update item in collection)
+    }
+    
     
 
     
