@@ -1,0 +1,322 @@
+MongoDB Project 1:
+
+What is NoSQL?
+* Means: 'Not Only SQL'
+* Structured Query Language
+* Non relational database - no tables or columns. Dynamic schemas.
+* Serves and handles big data better than traditional relational databases.
+
+Advantages:
+* Better scaling - a scale out method. We can expand the size by increasing the number of clients. Cheaper and easier
+* Large volumes of structured and unstructured data
+* Create schema on the fly through the application.
+
+Different types of databases (generally):
+Document database - most common and powerful (stored in a json document) <<<<<<THIS IS THE ONE WE ARE WORKING WITH.
+key value stores - simplist. key value pairs
+column stores - data stored in cells that are grouped in columns
+Graph database  - use nodes with key/value pairs. Good for social networks
+Caching - data stored in memory as opposed to on disk
+
+
+CLI:
+sudo service mongod start
+mongodb - turns on mongo system?
+
+(in a new terminal window)
+mongo - Enter mongo shell
+show dbs - lists admin and local databases
+
+exit
+
+
+THIS PROJECT IS DONE IN THE MONGO SHELL
+
+SHOW EXISTING DATABASES
+
+show dbs
+admin  0.000GB
+local  0.000GB
+
+
+CREATE A NEW DATABASE
+> use acme
+switched to db acme
+> show collections
+
+CREATE A COLLECTION IN THE NEW DATABASE
+> db.createCollection('customers');
+{ "ok" : 1 }
+> show collections
+customers
+
+CREATE ONE ITEM FOR THE COLLECTION
+> db.customers.insert({first_name:'Tim', last_name:'Beals'});
+WriteResult({ "nInserted" : 1 })
+> db.customers.find();
+{ "_id" : ObjectId("58f6541f27d257ae4bbe37a4"), "first_name" : "Tim", "last_name" : "Beals" }
+> db.customers.find().pretty();
+{
+  "_id" : ObjectId("58f6541f27d257ae4bbe37a4"),
+  "first_name" : "Tim",
+  "last_name" : "Beals"
+}
+
+ADD MULTIPLE ITEMS TO THE COLLECTION
+> db.customers.insert([{first_name:"Tara", last_name:"Beals"}, {first_name:"Silas", last_name:"Roberts"}, {first_name:"Ruby", last_name:"Roberts"}]);
+BulkWriteResult({
+  "writeErrors" : [ ],
+  "writeConcernErrors" : [ ],
+  "nInserted" : 3,
+  "nUpserted" : 0,
+  "nMatched" : 0,
+  "nModified" : 0,
+  "nRemoved" : 0,
+  "upserted" : [ ]
+})
+> db.customers.find().pretty();
+{
+  "_id" : ObjectId("58f6541f27d257ae4bbe37a4"),
+  "first_name" : "Tim",
+  "last_name" : "Beals"
+}
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a5"),
+  "first_name" : "Tara",
+  "last_name" : "Beals"
+}
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a6"),
+  "first_name" : "Silas",
+  "last_name" : "Roberts"
+}
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a7"),
+  "first_name" : "Ruby",
+  "last_name" : "Roberts"
+}
+
+NOTICE THAT YOU CAN ADD OR REMOVE FIELDS ON THE FLY
+> db.customers.insert({first_name:"Terri", last_name:"Beals", occupation:"teacher"});
+WriteResult({ "nInserted" : 1 })
+> db.customers.find().pretty();
+{
+  "_id" : ObjectId("58f6541f27d257ae4bbe37a4"),
+  "first_name" : "Tim",
+  "last_name" : "Beals"
+}
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a5"),
+  "first_name" : "Tara",
+  "last_name" : "Beals"
+}
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a6"),
+  "first_name" : "Silas",
+  "last_name" : "Roberts"
+}
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a7"),
+  "first_name" : "Ruby",
+  "last_name" : "Roberts"
+}
+{
+  "_id" : ObjectId("58f6560727d257ae4bbe37a8"),
+  "first_name" : "Terri",
+  "last_name" : "Beals",
+  "occupation" : "teacher"
+}
+
+INCLUDE NUMBER AND DATE INFORMATION
+> db.customers.insert({first_name:"Michael", last_name:"Beals", age:36, dob: new Date('Oct 3, 1980')});
+WriteResult({ "nInserted" : 1 })
+> db.customers.find().pretty();
+{
+  "_id" : ObjectId("58f6541f27d257ae4bbe37a4"),
+  "first_name" : "Tim",
+  "last_name" : "Beals"
+}
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a5"),
+  "first_name" : "Tara",
+  "last_name" : "Beals"
+}
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a6"),
+  "first_name" : "Silas",
+  "last_name" : "Roberts"
+}
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a7"),
+  "first_name" : "Ruby",
+  "last_name" : "Roberts"
+}
+{
+  "_id" : ObjectId("58f6560727d257ae4bbe37a8"),
+  "first_name" : "Terri",
+  "last_name" : "Beals",
+  "occupation" : "teacher"
+}
+{
+  "_id" : ObjectId("58f6571227d257ae4bbe37a9"),
+  "first_name" : "Michael",
+  "last_name" : "Beals",
+  "age" : 36,
+  "dob" : ISODate("1980-10-03T07:00:00Z")
+}
+
+RETRIEVE ONE ITEM FROM THE COLLECTION
+>  db.customers.findOne({first_name:"Tara"});
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a5"),
+  "first_name" : "Tara",
+  "last_name" : "Beals"
+}
+
+
+UPDATE ONE ITEM
+find the item Michael and update the information on the right...
+db.customers.update({first_name:"Michael"},{age:37});
+
+uh oh... it removes the properties that you haven't specified.
+{ "_id" : ObjectId("58f6571227d257ae4bbe37a9"), "age" : 37 }
+
+INSTEAD USE:
+> db.customers.update({first_name:"Michael"},{$set:{age:37}});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.customers.findOne({first_name:"Michael"})
+{
+  "_id" : ObjectId("58f6571227d257ae4bbe37a9"),
+  "first_name" : "Michael",
+  "last_name" : "Beals",
+  "age" : 37
+}
+
+db.customers.update({first_name:"Tara"},{$set:{occupation:"Teacher"}});
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.customers.findOne({first_name:"Tara"})
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a5"),
+  "first_name" : "Tara",
+  "last_name" : "Beals",
+  "occupation" : "Teacher"
+}
+
+
+UPSERT: IN THIS SITUATION, I WANT TO EITHER UPDATE THE CUSTOMER IF THEY EXIST OR CREATE THEM IF THEY DON'T EXIST...
+
+> db.customers.update({first_name:"Geoff"},{$set:{last_name:"Beals"}},{upsert: true});
+
+WriteResult({
+  "nMatched" : 0,
+  "nUpserted" : 1,
+  "nModified" : 0,
+  "_id" : ObjectId("58f661b160723ec0423a3653")
+})
+
+AND THE RESULT...
+{
+  "_id" : ObjectId("58f661b160723ec0423a3653"),
+  "first_name" : "Geoff",
+  "last_name" : "Beals"
+}
+>
+
+UNSET: REMOVE A KEY VALUE PAIR
+
+db.customers.update({first_name:"Terri"},{$unset:{occupation:""}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+> db.customers.find({first_name:"Terri"}).pretty();
+{
+  "_id" : ObjectId("58f6560727d257ae4bbe37a8"),
+  "first_name" : "Terri",
+  "last_name" : "Beals"
+}
+
+REMOVE: LOCATE AND REMOVE AN ENTIRE ENTRY IN A COLLECTION
+
+db.customers.remove({first_name:"Michael"});
+WriteResult({ "nRemoved" : 1 })
+> db.customers.find().pretty();
+{
+  "_id" : ObjectId("58f6541f27d257ae4bbe37a4"),
+  "first_name" : "Tim",
+  "last_name" : "Beals"
+}
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a5"),
+  "first_name" : "Tara",
+  "last_name" : "Beals",
+  "occupation" : "Teacher"
+}
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a6"),
+  "first_name" : "Silas",
+  "last_name" : "Roberts"
+}
+{
+  "_id" : ObjectId("58f6554727d257ae4bbe37a7"),
+  "first_name" : "Ruby",
+  "last_name" : "Roberts"
+}
+{
+  "_id" : ObjectId("58f6560727d257ae4bbe37a8"),
+  "first_name" : "Terri",
+  "last_name" : "Beals"
+}
+{
+  "_id" : ObjectId("58f661b160723ec0423a3653"),
+  "first_name" : "Geoff",
+  "last_name" : "Beals"
+}
+
+REMOVE ALL ENTRIES THAT HAVE AN AGE OF OVER 30
+
+db.customers.remove({age:{$gt:30}});  //gt is greater than
+WriteResult({ "nRemoved" : 2 })
+
+EBEDDING OBJECTS (AN ADDRESS IN THIS CASE)
+
+> db.customers.insert({first_name:"Holly", last_name:"Beals", occupation:"systems manager", address:{street:"33 Wellington St", town:"Papakura", postcode:2011, country:"NewZealand"}, age:31});
+WriteResult({ "nInserted" : 1 })
+> db.customers.find({first_name:"Holly"}).pretty();
+{
+  "_id" : ObjectId("58f6671a27d257ae4bbe37aa"),
+  "first_name" : "Holly",
+  "last_name" : "Beals",
+  "occupation" : "systems manager",
+  "address" : {
+    "street" : "33 Wellington St",
+    "town" : "Papakura",
+    "postcode" : 2011,
+    "country" : "NewZealand"
+  },
+  "age" : 31
+}
+
+
+INCLUDING ARRAYS - THIS IS AN ARRAY OF KEY VALUE PAIRS.
+
+db.customers.insert({first_name:"Peter", last_name:"Bolling", services:[{idNum: 324, name:"web hosting"}, {idNum: 3726, name:"premium support"}]});
+WriteResult({ "nInserted" : 1 })
+
+
+RETURN SPECIFIC DATA FROM AN ITEM:
+FIND THE ENTRY(IES) WITH THE FIRST NAME PETER AND THEN RETURN THEIR SERVICES.
+
+db.customers.find({first_name:"Peter"}, {services:1})
+
+{ "_id" : ObjectId("58f66a6627d257ae4bbe37ad"), "services" : [ { "idNum" : 324, "name" : "web hosting" }, { "idNum" : 3726, "name" : "premium support" } ] }
+
+
+TO FURTHER REFINE THE RESULTS YOU COULD REQUEST JUST THE NAME OF THE SERVICES (NOT THE IDS)
+
+> db.customers.find({first_name:"Peter"}, {"services.name":1})
+{ "_id" : ObjectId("58f66a6627d257ae4bbe37ad"), "services" : [ { "name" : "web hosting" }, { "name" : "premium support" }
+
+PUSH AN ITEM ONTO THE END OF AN ARRAY IN AN EXISTING ITEM
+> db.customers.update({first_name:"Peter"},{$push:{services:{idNum: 9999, name: "insurance"}}})
+
+
+

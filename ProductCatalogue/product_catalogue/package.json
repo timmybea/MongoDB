@@ -1,0 +1,17 @@
+{
+  "name": "project_catalogue",
+  "version": "1.0.0",
+  "description": "Simple REST api catalogue app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+  "author": "Tim Beals",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "mongojs": "^2.4.0"
+  }
+}

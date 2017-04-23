@@ -1,0 +1,193 @@
+2_Product_Catalog_REST_API
+
+What is Node.js?
+a platform build on Chrome's V8 Javascript runtime.
+Essentially it is javascript on the server
+Event driven non-blocking i/o model - In otherwords it does asynchronous network calls thousands at a time.
+This makes it great for real time apps (messaging etc.)
+Cross platform - linux, windows and mac
+
+NPM - Node Package Modules it is the package manager that comes with Node.js
+
+Package.json
+Is the required manifest for Node apps
+Includes name, version, description etc
+Includes dependencies (like Express)
+
+What is Express?
+A popular framework for Node.js
+uses HTTP tools and utilities for creating APIs
+Creates routes for GET, POST, PUT, DELETE etc
+
+RESTful API?
+Representational State Transfer
+Architecture style for designing networked apps
+Relies on stateless client-server communication protocol (HTTP)
+JSON/XML (Most commonly json)
+
+
+REST IS RESOURCE BASED
+things not actions (actions are SOAP)
+messages, id#s, images...
+Identified by URIs (Uniform Resource Identifier) Note that URL is the most common subset of URI
+HTTP uses verbs to interact with the objects in the database
+Language is irrelevant
+
+
+GET - reading data from the server
+POST - Create or insert data through the API (submission)
+PUT - Update or replace data
+DELETE - destroy a resource in the database
+
+
+STEPS
+Install Nodejs
+We then have access to npm and can use that to install Express (framework)
+Use Mongojs which is an orm (object relational mapping) that allows us to connect our Node app to our Mongo db.
+
+*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_
+
+
+* INSTALL NODE
+
+* CHECK VERSION
+
+timbeals$ node -v
+v6.10.2
+
+timbeals$ npm -v
+3.10.10
+
+* CREATE PACKAGE.JSON FILE
+
+timbeals$ mkdir project_catalogue
+timbeals$ cd project_catalogue/
+timbeals$ npm init
+
+This utility will walk you through creating a package.json file.
+It only covers the most common items, and tries to guess sensible defaults.
+
+See `npm help json` for definitive documentation on these fields
+and exactly what they do.
+
+Use `npm install <pkg> --save` afterwards to install a package and
+save it as a dependency in the package.json file.
+
+Press ^C at any time to quit.
+name: (project_catalogue)
+version: (1.0.0)
+description: Simple REST api catalogue app
+entry point: (index.js) app.js
+test command:
+git repository:
+keywords:
+author: Tim Beals
+license: (ISC)
+About to write to /Users/timbeals/iOSDevelopment/StackSkills/MongoDB/project_catalogue/package.json:
+
+{
+  "name": "project_catalogue",
+  "version": "1.0.0",
+  "description": "Simple REST api catalogue app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tim Beals",
+  "license": "ISC"
+}
+
+
+Is this ok? (yes)
+
+* CREATE A NEW FILE THAT MATCHES YOUR ENTRY POINT 'app.js' and create a console.log to test it. RUN IT!
+
+timbeals$ node app.js
+Hello World
+
+ADD A START COMMAND TO SCRIPTS IN PACKAGE.JSON:
+
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+
+NOW YOU CAN RUN THE PROGRAM WITH:
+
+timbeals$ npm start
+
+* INSTALL EXPRESS AND OTHER DEPENDENCIES WITH NPM
+timbeals$ npm install express body-parser mongojs --save
+
+(they will now appear in the dependencies key of your package.json and inside a new directory called node_modules)
+
+TURN OFF THE SERVER
+control c
+
+BRING UP MONGO SHELL, CREATE A DATABASE, A COLLECTION, AND SOME ITEMS...
+timbeals$ mongo
+
+> show dbs
+acme   0.000GB
+admin  0.000GB
+local  0.000GB
+
+> use catalogue
+switched to db catalogue
+
+> db.createCollection('products');
+{ "ok" : 1 }
+
+> db.products.insert({
+...   name: 'Dell Inspiron',
+...   category: 'electronics',
+...   model: 'i3168-3272GRY',
+...   price: 299.99,
+...   image: 'http://www.staples-3p.com/s7/is/image/Staples/s1038114_sc7?$splssku$',
+...   details: 'Intel Pentium Processor N3710 (2M Cache, up to 2.56 GHz)'
+... });
+WriteResult({ "nInserted" : 1 })
+
+> db.products.find().pretty();
+{
+  "_id" : ObjectId("58f80a7c27c4de2ce0be9056"),
+  "name" : "Dell Inspiron",
+  "category" : "electronics",
+  "model" : "i3168-3272GRY",
+  "price" : 299.99,
+  "image" : "http://www.staples-3p.com/s7/is/image/Staples/s1038114_sc7?$splssku$",
+  "details" : "Intel Pentium Processor N3710 (2M Cache, up to 2.56 GHz)"
+}
+
+> db.products.insert({
+...   name: 'Apple iPad Air with Retina display with WiFi 16GB, Silver',
+...   category: 'electronics',
+...   model: 'MD788LL/B',
+...   price: 399.99,
+...   image: 'http://www.staples-3p.com/s7/is/image/Staples/s0792858_sc7?$splssku$',
+...   details: '9.7-inch Retina display'
+... });
+WriteResult({ "nInserted" : 1 })
+
+> db.products.findOne({price:399.99});
+{
+  "_id" : ObjectId("58f80b9227c4de2ce0be9057"),
+  "name" : "Apple iPad Air with Retina display with WiFi 16GB, Silver",
+  "category" : "electronics",
+  "model" : "MD788LL/B",
+  "price" : 399.99,
+  "image" : "http://www.staples-3p.com/s7/is/image/Staples/s0792858_sc7?$splssku$",
+  "details" : "9.7-inch Retina display"
+}
+
+TO SAVE YOU FROM HAVING TO EXIT AND RESTART THE SERVER EVERYTIME YOU WANT TO TEST YOUR NEWLY SAVED CODE, INSTALL NODEMON...
+
+timbeals$ npm install -g nodemon
+
+NOW YOU CAN RESTART THE SERVER WITH 'nodemon'
+
+
+
+
+
+

@@ -1,0 +1,24 @@
+Use a remote MongoDB installation on mLab.com (Cloud service)
+Use jQuery front end to make get and post requests
+Bootstrap UI
+Two data Collections: Tasks and Categories
+
+*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_
+
+Setup:
+
+MLAB.COM
+Create a deployment (this will be your remote db)
+set up your user and collections (tasks, categories)
+enter 'categories' and then add two documents (as json)
+
+LOCAL COMPUTER
+create a project directory for your project and an index.html file.
+go to getbootstrap.com, download, unzip and then bring the files into your project directory
+
+Final Comment:
+The functionality of the web program is ok, except for two bugs. First, the Edit Task can’t seem to make the correct category selection. Second, when you post a new task, the isUrgent is being input as a String as opposed to a boolean.
+
+
+
+
