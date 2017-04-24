@@ -10,23 +10,27 @@ import UIKit
 
 struct Task {
 
-    let id: String!
-    let taskName: String!
-    let category: String!
-    let dueDate: String!
-    let isUrgent: Bool!
+    var id: String? //keep optional because this may only be created once you do a post request
+    var taskName: String!
+    var category: String!
+    var dueDate: String!
+    var isUrgent: Bool!
+    
+    func taskAsDictionary() -> [String: AnyObject]{
+        var dictionary = [String: AnyObject]()
+        dictionary["id"] = id as AnyObject?
+        dictionary["task_name"] = taskName as AnyObject?
+        dictionary["due_date"] = dueDate as AnyObject?
+        dictionary["isUrgent"] = isUrgent as AnyObject?
+        dictionary["category"] = category as AnyObject?
+        return dictionary
+    }
+    
 }
 
 
 struct Category {
     
     let id: String!
-    let categoryName: String!
+    var categoryName: String!
 }
-
-//{
-//    "_id": {
-//        "$oid": "58f90e67734d1d3bdb4106b9"
-//    },
-//    "category_name": "work"
-//}
